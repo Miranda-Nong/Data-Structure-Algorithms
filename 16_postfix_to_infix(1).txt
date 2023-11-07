@@ -1,0 +1,39 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define MAX 100
+typedef struct StringStack {
+    int top;
+    char items[MAX][MAX]; //a[MAX];
+} StringStack;
+StringStack s;
+void push(char *x) { strcpy(s.items[++s.top], x); }
+void pop(char *x) { strcpy(x, s.items[s.top--]);  }
+void mergeString(char *a, char *b, char *c, char *d, char *e) {
+    strcat(a, b); strcat(a, c); strcat(a, d); strcat(a, e);
+}
+int isOperator(char x) {
+    if (x == '^' || x == '/' || x == '*' || x == '+' || x == '-') return 1;
+    else return 0;
+}
+void PostfixToInfix(char *pos, char *inf) {
+    char opnd1[MAX], opnd2[MAX], sym[2], t1[2] = "(", t2[2] = ")", temp[MAX];
+    for (int i = 0; pos[i] != '\0'; i++) {
+        sym[0] = pos[i], sym[1] = '\0';
+        if (isOperator(sym[0])) {
+            pop(opnd2); pop(opnd1);
+            strcpy (temp, t1);
+            mergeString(temp, opnd1, sym, opnd2, t2);
+            push(temp);
+        }
+        else push(sym);
+    }
+    pop(inf);
+}
+int main() {
+    char pos[MAX], infix[MAX];
+    printf("Enter Postfix Expression:\n");
+    scanf("%s", pos);
+    PostfixToInfix(pos, infix);
+    printf("The Infix Expression is %s\n", infix);
+}

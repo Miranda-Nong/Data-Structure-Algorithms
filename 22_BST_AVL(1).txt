@@ -1,0 +1,48 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node {
+    int data;
+    struct node *left, *right;
+} node;
+node *ROOT = NULL;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x; temp->left = NULL; temp->right = NULL;
+    return temp;
+}
+node *insert(node *root, int x) {
+    if (root == NULL) root = getnode(x);
+    else if (x < root->data) root->left = insert(root->left, x);
+    else root->right = insert(root->right, x); 
+    return root;
+}int height(node *root) {
+    if (root == NULL) return -1;
+    int l = height(root->left), r = height(root->right);
+    if (l > r) return 1+l; else return 1+r;
+}
+int isAVL(node *root) {
+    if (root == NULL) return 1;
+    int hl = height(root->left), hr = height(root->right);
+    int diff = (hl > hr) ? hl-hr: hr-hl;
+    if (diff <= 1 && isAVL(root->left) && isAVL(root->right)) return 1; else return 0;
+}
+void print(node *root, int lv) {
+    if (root == NULL) return ;
+    print(root->right, lv + 1);
+    for (int i = 0; i < lv; i++) printf("   ");
+    printf("%d\n", root->data);
+    print(root->left, lv + 1);
+}
+int main()
+{
+    ROOT =  insert(ROOT, 41);
+    ROOT = insert(ROOT, 20);
+    ROOT = insert(ROOT, 65);
+    ROOT =  insert(ROOT, 11);
+    ROOT = insert(ROOT, 29);
+    ROOT = insert(ROOT, 50);
+    ROOT = insert(ROOT, 26);
+    print(ROOT, 0);
+    if (isAVL(ROOT)) printf("The Tree is AVL\n");
+    else printf("The Tree is not AVL\n");
+}

@@ -1,0 +1,37 @@
+#include<stdio.h>	
+#include<stdlib.h>
+#include<math.h>
+#define MAX_SIZE 2048
+typedef struct stack {
+	int top;
+	double items[MAX_SIZE];
+} stack;
+stack s;
+void push(double x) {	s.items[++s.top] = x;	}
+double pop() {	return s.items[s.top--];	}
+double evaluate(double a, char x, double b) {
+	switch (x) {
+		case '+': return a+b;
+		case '-': return a-b;
+		case '*': return a*b;
+		case '/': return a/b;
+		case '^': return pow(a, b);
+	}
+}
+double pos_eval(char* postfix) {
+	char sym;
+	for (int i = 0; postfix[i] != '\0'; i++) {
+		sym = postfix[i];
+		if (sym-'0' <= 9 && sym-'0' >= 0) push((double)(sym-'0'));
+		else push(evaluate(pop(), sym, pop()));
+	}
+	return pop();
+}
+int main()
+{
+	printf("Enter the Postfix Expression:\n");
+	char s[MAX_SIZE];
+	scanf("%s", s);
+	double res = pos_eval(s);
+	printf("%f\n", res);
+}

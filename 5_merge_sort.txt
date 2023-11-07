@@ -1,0 +1,38 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+void merge(int *a, int *l, int *r, int lcount, int rcount)
+{
+    int index_a = 0, index_l = 0, index_r = 0;
+    while (index_l < lcount && index_r < rcount){
+        if (l[index_l] < r[index_r]){
+            a[index_a] = l[index_l];
+            index_a++; index_l++;
+        } 
+        else {
+            a[index_a] = r[index_r];
+            index_a++; index_r++;
+        }
+    }
+    while (index_l < lcount){
+            a[index_a] = l[index_l];
+            index_a++; index_l++;
+    }
+    while (index_r < rcount){
+            a[index_a] = l[index_l];
+            index_a++; index_l++;
+    } 
+}
+
+void merge_sort(int *a, int n){
+    if (n < 2) return ;
+    int i, mid = n/2; int *l, *r;
+    l = (int *) malloc (mid*sizeof(int));
+    r = (int *) malloc ((n-mid)*sizeof(int));
+    for (i = 0; i < mid; i++) l[i] = a[i];
+    for (i = mid; i < n; i++) r[i-mid] = a[i];
+    merge_sort(l, mid); merge_sort(r, n - mid);
+    merge(a, l, r, mid, n - mid);
+    free (l);
+    free (r);
+}

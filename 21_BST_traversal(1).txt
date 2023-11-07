@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node {
+    int data;
+    struct node *left, *right;
+} node;
+node *ROOT = NULL;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x; temp->left = NULL; temp->right = NULL;
+    return temp;
+}
+node *insert(node *root, int x) {
+    if (root == NULL) root = getnode(x);
+    else if (x < root->data) root->left = insert(root->left, x);
+    else root->right = insert(root->right, x); 
+    return root;
+}
+void intrav(node *root) {
+    if (root == NULL) return ;
+    else {
+        intrav(root->left);
+        printf("%d ", root->data);
+        intrav(root->right);
+    }
+}
+void postrav(node *root) {
+    if (root == NULL) return ;
+    else {
+        postrav(root->left);
+        postrav(root->right);
+        printf("%d ", root->data);
+    }
+}
+void pretrav(node *root) {
+    if (root == NULL) return ;
+    else {
+        printf("%d ", root->data);
+        pretrav(root->left);
+        pretrav(root->right);
+    }
+}
+int main() {
+    ROOT =  insert(ROOT, 10); ROOT = insert(ROOT, 5); ROOT = insert(ROOT, 17);
+    ROOT =  insert(ROOT, 6);
+    intrav(ROOT); printf("\n");
+    postrav(ROOT); printf("\n");
+    pretrav(ROOT); printf("\n");
+}

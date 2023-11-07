@@ -1,0 +1,59 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define MAX_SIZE 2048
+typedef struct stack {
+	int top;
+	char items[MAX_SIZE];
+} stack;
+stack s;
+void push(char x) { s.items[++s.top] = x; }
+char pop() { return s.items[s.top--]; }
+char display() { return s.items[s.top]; }
+int get_len(char x) {
+	switch(x) {
+		case '+':
+		case '-': return 1;
+		case '*':
+		case '/': return 2;
+		case '^': return 3;
+		default : printf("Invalid Operator %c\n", x);
+	}
+}
+int prec (char a, char b) {
+	int la = get_len(a), lb = get_len(b);
+	if (la > lb) return 1;
+	else if (la == lb && la == '^') return 1;
+	else return 0;
+}
+void InfixToPostfix(char *infix, char *postfix) {
+	int i = 0; char topsym;
+	for (int j = 0; infix[j] != '\0'; j++) {
+		char sym = infix[j];
+		if (sym <= '9' && sym >= '0') postfix[i++] = sym;
+		else if (sym == '(') push(sym);
+		else if (sym == ')') {
+			topsym = pop();
+			while (s.top != -1 && topsym != '(') {
+				postfix[i++] = topsym;
+				topsym = pop();
+			}
+		}
+		else {
+			while (s.top != -1 && display() != '(' && !prec(sym, display()))
+				postfix[i++] = pop();
+			push(sym);
+		}
+	}
+	while (s.top != -1) postfix[i++] = pop();
+	postfix[i] = '\0';
+}
+int main() {
+	s.top = -1;
+	printf("Enter Infix Expression:\n");
+	char infix[MAX_SIZE];
+	scanf("%s", infix);
+	char *postfix = (char *) malloc (strlen(infix));
+	InfixToPostfix(infix, postfix);
+	printf("%s\n", postfix);
+}

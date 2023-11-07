@@ -1,0 +1,159 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct node {
+	int data;
+	struct node *next;
+} node;
+node *list;
+node *getnode() {
+	node *temp = (node*) malloc (sizeof(node));
+	return temp;
+}
+void insert_beg(int x) {
+	node *temp = getnode();
+	temp->data = x;
+	temp->next = list;
+	list = temp;
+}
+void insert_after(node *p, int x) {
+	if (p == NULL) printf("Void Insertion!!!\n"), exit(1);
+	node *temp = getnode();
+	temp->data = x;
+	temp->next = p->next;
+	p->next = temp;
+}
+void insert_atx(int x) {
+	int n;
+	node *temp = list;
+	printf("Enter position of the new link: ");
+	scanf("%d", &n);
+	if (n == 1) insert_beg(x);
+	else {
+		for (int i = 1; i < n-1; i++)
+			if (temp == NULL) printf("List is terminated after %d link(s)\n", i-1), exit(1);
+			else temp = temp->next;
+		insert_after(temp, x);
+	}
+}
+void insert_end(int x) {
+	if (list == NULL) insert_beg(x);
+	else {
+		node *temp = list;
+		while (temp->next != NULL)
+			temp = temp->next;
+		insert_after(temp, x);
+	}
+}
+int delete_beg() {
+	if (list == NULL) printf("Void Deletion!!!\n"), exit(1);
+	node *temp = list;
+	list = temp->next;
+	int x = temp->data;
+	free(temp);
+	return x;
+}
+int delete_after(node *p) {
+	if (p == NULL || p->next == NULL) printf("Void Deletion!!!\n"), exit(1);
+	node *temp = p->next;
+	int x = temp->data;
+	p->next = temp->next;
+	free(temp);
+	return x;
+}
+int delete_x() {
+	int n, x, i;
+	node *temp = list;
+	printf("Enter position of the link to delete: ");
+	scanf("%d", &n);
+	if (n == 1) x = delete_beg(list);
+	else {
+		for (i = 1; i < n-1; i++)
+			if (temp == NULL || temp->next == NULL) 
+				printf("List is terminated after %d link(s)\n", i), exit(1);
+			else temp = temp->next;
+		x = delete_after(temp);
+	}
+	return x;
+}
+int delete_end() {
+	int x;
+	node *temp = list;
+	if (temp == NULL || temp->next == NULL)	
+		x = delete_beg(list);
+	else {
+		while (temp->next->next != NULL) temp = temp->next;
+		x = delete_after(temp);
+	}
+	return x;
+}
+void read_list() {
+	int n, x, i;
+	printf("Enter number of elements to read: ");
+	scanf("%d", &n);
+	printf("Enter the list: ");
+	for (i = 0; i < n; i++) {
+		scanf("%d", &x);
+		insert_end(x);
+	}
+}
+void print_list() {
+	node *temp = list;
+	printf("The List is:\t");
+	while (temp != NULL)
+		printf("%d ", temp->data), temp = temp->next;
+	printf("\n");
+}
+void insert_list() {
+	int n, c, x, i;
+	printf("Total number of insetions to the list: ");
+	scanf("%d", &n);
+	printf("Enter code 1, 2 and 3 to insert at begining, after x and at end respectively.\n");
+	for (i = 0; i < n; i++) {
+		printf("Code: "); scanf("%d", &c);
+		if (c <= 3) {
+			printf("Enter the value of element: ");
+			scanf("%d", &x);
+			if (c == 1) insert_beg(x);
+			else if (c == 2) insert_atx(x);
+			else insert_end(x);
+		}
+		else printf("Please enter 1, 2 or 3 only\n"), i--;
+		print_list();
+	}
+}
+int *delete_list() {
+	int n, c, *x, i;
+	printf("Total number of deletions to the list: ");
+	scanf("%d", &n);
+	x = (int *) malloc (n*sizeof(int));
+	printf("Enter code 1, 2 and 3 to delete node at begining, at xth position and at end respectively.\n");
+	for (i = 0; i < n; i++) {
+		printf("Code: "); scanf("%d", &c);
+		if (c <= 3 && c > 0) {
+			if (c == 1) x[i] = delete_beg();
+			else if (c == 2) x[i] = delete_x();
+			else x[i] = delete_end();
+		}
+		else printf("Please enter 1, 2 or 3 only\n"), i--;
+		print_list();
+	}
+	return x;
+}
+int size_array(int *x) {
+	int i = 0, *y;
+	y = x;
+	while (1) {
+		printf("%d %d\n", y[i], x[i]);
+		if (i == 10) break;
+		i++;
+	}
+}
+int main() {
+	int *x, i = 0;
+	list = NULL;
+	read_list();
+	print_list();
+	insert_list();
+	x = delete_list();
+}

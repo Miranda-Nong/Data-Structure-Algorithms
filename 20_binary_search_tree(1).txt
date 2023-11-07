@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node {
+    int data;
+    struct node *left;
+    struct node *right;
+} node;
+node *ROOT = NULL;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x; temp->left = NULL; temp->right = NULL;
+    return temp;
+}
+node *find_min(node *root) {
+    if (root == NULL) return root;
+    if (root->left == NULL && root->right == NULL) return root;
+    else if (root->left == NULL) return find_min(root->right);
+    else return find_min(root->left);
+}
+node *insert(node *root, int x) {
+    if (root == NULL) root = getnode(x);
+    else if (x < root->data) root->left = insert(root->left, x);
+    else root->right = insert(root->right, x); 
+    return root;
+}
+node *delete(node *root, int x) {
+    if (root == NULL) return root;
+    else if (x < root->data) root->left = delete(root->left, x);
+    else if (x > root->data) root->right = delete(root->right, x);
+    else {
+        if (root->left == NULL && root->right == NULL) { free(root); root = NULL; }
+        else if (root->left == NULL) { node *temp = root; root = root->right; free(temp); }
+        else if (root->right == NULL) { node *temp = root; root = root->left; free(temp); }
+        else {
+            node *temp = find_min(root->right); root->data = temp->data;
+            root->right = delete(root->right, temp->data);
+        }
+    }
+    return root;
+}
+void print(node *root, int lv) {
+    if (root == NULL) return ;
+    print(root->right, lv + 1);
+    for (int i = 0; i < lv; i++) printf("   ");
+    printf("%d\n", root->data);
+    print(root->left, lv + 1);
+} 
+int main() {
+    ROOT =  insert(ROOT, 10); ROOT = insert(ROOT, 5); ROOT = insert(ROOT, 17); ROOT = insert(ROOT, 6);
+    ROOT =  insert(ROOT, 30); ROOT = insert(ROOT, 1); ROOT = insert(ROOT, 7); ROOT = insert(ROOT, 4);
+    ROOT =  insert(ROOT, 15); ROOT = insert(ROOT, 35); ROOT = insert(ROOT, 21); ROOT = insert(ROOT, 2);
+    print(ROOT, 1);
+    ROOT = delete(ROOT, 5);
+    print(ROOT, 0);
+}

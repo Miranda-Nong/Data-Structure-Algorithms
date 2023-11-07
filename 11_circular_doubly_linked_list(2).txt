@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct node {
+    int data;
+    struct node *next;
+    struct node *prev;
+} node;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x;
+    return temp;
+}
+node *head, *tail;
+void insert_beg(int x) {
+    node *temp = getnode(x);
+    if (head == NULL) {
+        temp->next = temp;
+        temp->prev = temp;
+        tail = temp;
+        head = temp;
+        return ;
+    }
+    temp->next = head;
+    head->prev = temp;
+    head = temp;
+    if (tail == NULL) tail = temp;
+    tail->next = head;
+    head->prev = tail;
+}
+void insert_after(int x, node *p) {
+    if (p == NULL) printf("Void Insertion\n"), exit(1);
+    node *temp = getnode(x);
+    temp->next = p->next;
+    p->next = temp;
+    temp->prev = p;
+    if (p == tail) tail = temp;
+    temp = temp->next;
+    temp->prev = p->next;
+}
+void insert_end(int x) {
+    if (head == NULL) insert_beg(x);
+    else insert_after(x, tail);
+}
+int delete_beg() {
+    if (head == NULL) printf("Void Deletion\n"), exit(1);
+    node *temp = head;
+    int x = temp->data;
+    if (tail == head) {
+        free(temp);
+        head = NULL; temp = NULL;
+        return x;
+    }
+    head = head->next; tail->next = head;
+    head->prev = tail;
+    free(temp);
+    return x;
+}
+int delete_after(node *p) {
+    node *temp =  p->next;
+    int x = temp->data;
+    if (p == NULL) printf("Void Deletion\n"), exit(1);
+    if (p == tail) return(delete_beg());
+    if (p->next == tail) tail = p;
+    p->next = p->next->next;
+    free(temp);
+    temp = p->next;
+    temp->prev = p;
+    return x;
+}
+int delete_end() {
+    if (head == tail) return(delete_beg());
+    else return(delete_after(tail->prev));
+}
+void display() {
+    node *temp = head;
+    while (temp != tail) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("%d\n", temp->data);
+}
+void read() {
+    char c[10];
+    int n;
+    printf("Enter list: ");
+    while (1) {
+        scanf("%s", c);
+        if (strcmp(c, "NULL") == 0) break;
+        n = atoi(c);
+        insert_end(n);
+    }
+}
+int main() {
+    head = NULL; tail = NULL;
+    read();
+    display(head, tail);
+    insert_beg(12);
+    display(head, tail);
+    insert_after(2, head);
+    display(head, tail);
+    insert_end(3);
+    display(head, tail);
+    printf("%d\n", delete_beg());
+    printf("%d\n", delete_after(tail));
+    printf("%d\n", delete_end());
+    display(head, tail);
+}

@@ -1,0 +1,101 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct node {
+	int data;
+	struct node *next;
+} node;
+node *list;
+node *getnode(int x) {
+	node *temp = (node*) malloc (sizeof(node));
+    temp->data = x;
+	return temp;
+}
+node *endnode() {
+	node *temp = list->next;
+	if (temp == temp->next) return temp;
+	while (temp->next != list) temp = temp->next;
+	return temp;
+}
+void insert_beg(int x) {
+	node *temp = getnode(x);
+	if (list == NULL) {
+		list = temp;
+		temp->next = list;
+		return ;
+	}
+	temp->next = list;
+	list = temp;
+	node *tmp = endnode();
+	tmp->next = list;
+}
+void insert_after(node *p, int x) {
+	if (p == NULL) printf("Void Insertion!!!\n"), exit(1);
+	node *temp = getnode(x);
+	temp->next = p->next;
+	p->next = temp;
+}
+void insert_end(int x) {
+	if (list == NULL) insert_beg(x);
+	else insert_after(endnode(), x);
+}
+int delete_beg() {
+	if (list == NULL) printf("Void Deletion!!!\n"), exit(1);
+	node *temp = list, *end = endnode();
+	list = temp->next;
+	int x = temp->data;
+	free(temp);
+	if (temp == NULL) return x;
+	end->next = list;
+	return x;
+}
+int delete_after(node *p) {
+	if (p == NULL || p->next == NULL) printf("Void Deletion!!!\n"), exit(1);
+	if (p == endnode()) return (delete_beg());
+	node *temp = p->next;
+	int x = temp->data;
+	p->next = temp->next;
+	free(temp);
+	return x;
+}
+int delete_end() {
+	int x;
+	node *temp = list;
+	if (temp == NULL || temp->next == NULL)	
+		x = delete_beg(list);
+	else {
+		while (temp->next->next != list) temp = temp->next;
+		x = delete_after(temp);
+	}
+	return x;
+}
+void read_list() {
+	int n, x, i;
+	printf("Enter number of elements to read: ");
+	scanf("%d", &n);
+	printf("Enter the list: ");
+	for (i = 0; i < n; i++) {
+		scanf("%d", &x);
+		insert_end(x);
+	}
+}
+void print_list() {
+	node *temp = list;
+	printf("The List is:\t");
+	while (temp->next != list)
+		printf("%d ", temp->data), temp = temp->next;
+	printf("%d ", temp->data), temp = temp->next;
+	printf("\n");
+}
+int main() {
+	int x;
+	list = NULL;
+	read_list();
+	print_list();
+	x = delete_beg();
+	print_list();
+	x = delete_after(endnode());
+	print_list();
+	x = delete_end();
+	print_list();
+}

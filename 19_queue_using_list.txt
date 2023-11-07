@@ -1,0 +1,28 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node {
+    int data;
+    struct node *next;
+} node;
+node *rear = NULL, *front = NULL;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x; temp->next = NULL;  return temp;
+}
+void enqueue(int x) {
+    if (rear == NULL) rear = getnode(x), front = rear;
+    else rear->next = getnode(x);
+}
+int dequeue() {
+    if (front == NULL) printf("Queue is empty!!!\n"), exit(1);
+    node *temp = front; front = front->next; int x = temp->data;
+    free(temp); return x;
+}
+void print(node *p) { if (p == NULL) return; else printf("%d ", p->data); print(p->next); }
+int main() {
+    enqueue(10); enqueue(11);
+    print(front); printf("\n");
+    printf("%d\n", dequeue());
+    printf("%d\n", dequeue());
+    printf("%d\n", dequeue());
+}

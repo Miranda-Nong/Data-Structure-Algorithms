@@ -1,0 +1,39 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node {
+    int data;
+    struct node* next;
+} node;
+node *top;
+node *getnode(int x) {
+    node *temp = (node *) malloc (sizeof(node));
+    temp->data = x;
+    return temp;
+}
+void push(int x) {
+    node *temp = getnode(x);
+    temp->next = top;
+    top = temp;
+}
+int pop() {
+    if (top == NULL) printf("Stack Underflow!!!\n"), exit(1);
+    node *temp = top;
+    top = top->next;
+    int x = temp->data;
+    free(temp);
+    return x;
+}
+void display(node *head) {
+    if(head == NULL) return ;
+    printf("%d ", head->data);
+    display(head->next);
+}
+int main() {
+    top = NULL;
+    push(10);
+    push(5);
+    push(6);
+    display(top);
+    printf("\n%d\n", pop());
+    display(top);
+}
